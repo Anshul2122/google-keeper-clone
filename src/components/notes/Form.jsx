@@ -1,12 +1,10 @@
-
-import { useState, useRef, useContext} from "react";
+import { useState, useRef, useContext } from 'react';
 
 import { Box, TextField, ClickAwayListener } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { v4 as uuid } from 'uuid';
 
 import { DataContext } from '../../context/DataProvider';
-import { v4 as uuid } from "uuid";
-
 
 const Container = styled(Box)`
     display: flex;
@@ -24,39 +22,40 @@ const note = {
     id:'',
     heading: '',
     text:'',
-
 }
 
 const Form = () => {
+
     const [showTextField, setShowTextFeild] = useState(false); 
-    const [addNote, setAddNotes] = useState({...note, id:uuid()});
+    const [addNote, setAddNote] = useState({...note, id: uuid()});
 
     const { setNotes } = useContext(DataContext);
-    const ContainerRef = useRef();
 
-    const onTextAreaClick = () => {
-        setShowTextFeild(true);
-        ContainerRef.current.style.minHeight = '70px';
-    }
+    const ContainerRef = useRef();
 
     const handleClickAway = () => {
         setShowTextFeild(false);
-        ContainerRef.current.style.minHeight = '30px';
+        ContainerRef.current.style.minheight = '30px';
+        setAddNote({ ...note, id: uuid() });
 
-        setAddNotes({ ...note, id: uuid() });
         if (addNote.heading || addNote.text) {
             setNotes(prevArr => [addNote, ...prevArr]);
         }
     }
 
+    const onTextAreaClick = () => {
+        setShowTextFeild(true);
+        ContainerRef.current.style.minheight = '70px';
+    }
+
     const onTextChange = (e) => {
         let changeNote = { ...addNote, [e.target.name]: e.target.value } 
-        setAddNotes(changeNote);
+        setAddNote(changeNote);
     }
     return (
         <ClickAwayListener onClickAway={handleClickAway}>
             <Container ref ={ContainerRef}>
-                {showTextField &&
+                {   showTextField &&
                     <TextField
                         placeholder='Title'
                         variant='standard'
@@ -75,9 +74,8 @@ const Form = () => {
                     InputProps={{ disableUnderline:true }}
                     onClick={onTextAreaClick}
                     onChange={(e) => onTextChange(e)}
-                    name='heading'
+                    name='text'
                     value={addNote.text}
-
                 />
             </Container>
         </ClickAwayListener>
